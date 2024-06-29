@@ -2,23 +2,34 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
     Dimensions, Image,
+    Modal,
     StyleSheet,
     Text,
-
-
     View
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { FAQ, GreenButton, HeaderSimple, PatientStatus, SafeAreaView } from '../components';
+import { FAQ, GreenButton, HeaderSimple, SafeAreaView } from '../components';
 import { useAuth } from '../contexts/auth.context';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
+import Menu from '../components/Menu';
 
 
 export function Profile(){
     const navigation = useNavigation();
     const {user, refreshToken, token, signed, signOut} = useAuth()
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const closeMenu = () => {
+        setMenuVisible(false);
+    };
+
+    const openMenu = () => {
+        setMenuVisible(true);
+    };
+
     
+    const patientImg = require("../assets/profile.png")
     const date = user?.lastUpdate;
     let dateString = '';
     let days = 0;
@@ -53,6 +64,10 @@ export function Profile(){
         //navigation.navigate('Config')
     }
 
+    function handleInsertions(){
+        navigation.navigate('ConditionInsert' as never)
+    }
+
     return(
         <SafeAreaView  
             accessible={true}
@@ -70,14 +85,25 @@ export function Profile(){
                     accessible={true} accessibilityLabel="Menu" 
                     name="menu" size={24} 
                     color="black"
-                    onPress={handleConfig} 
+                    onPress={openMenu} 
                 />
                 <View
                     style={styles.bodyUp}
                     accessible={true} 
                 >
+                <View
+                    style={styles.bodyUp}
+                    accessible={true} 
+                >
                     
-                    
+                    <Image
+                        accessible={true} 
+                        accessibilityLabel = "Imagem. Foto do usuário" 
+                        source={patientImg}
+                        style = {styles.image}
+                    />
+                
+                </View>
                 
                 </View>
 
@@ -96,19 +122,10 @@ export function Profile(){
                     <GreenButton
                         
                         accessibilityLabel="Botão. Clique para ir para a página de atualizar sintomas"
-                        title="Atualizar Sintomas"
-                        onPress={Data}
+                        title="Atualizar Condiões ou Sintomas"
+                        onPress={handleInsertions}
                     />
-                    
-                    <Text 
-                        accessible={true} 
-                        style={styles.status}
-                    >
-                        Seu Status atual é:
-                    </Text>
-                    <PatientStatus
-                        title={user?.status? user.status : ''}
-                    />
+
                     <FAQ
                         accessible={true}
                         accessibilityLabel="Botão. Clique para ir para a página de perguntas frequentes"
@@ -117,6 +134,14 @@ export function Profile(){
                     />
                 </View>
             </View>
+            <Modal
+                visible={menuVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={closeMenu}
+            >
+                <Menu onCloseMenu={closeMenu} />
+            </Modal>
 
         </SafeAreaView>
     )
@@ -141,25 +166,20 @@ const styles = StyleSheet.create({
         //marginTop: 40,
         width: Dimensions.get('window').width * 0.9,
         padding: 20,
-        
-        
+           
     },
     text:{
         fontSize: 20,
         color: colors.black,
         fontFamily: fonts.warning,
-        padding: 20
+        padding: 20,
+        marginBottom: 30
     },
-    status:{
-        fontSize: 16,
-        color: colors.black,
-        fontFamily: fonts.warning,
-        padding: 20
-    },
+
     test:{
         fontSize: 40,
         color: colors.black,
         fontFamily: fonts.warning,
         padding: 20
-    }
+    },
 })
