@@ -1,5 +1,5 @@
 import React from 'react'
-import{ StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
+import{ Dimensions, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
 
@@ -24,14 +24,17 @@ export function GreenButton({title, ...rest}: GreenButtonProps){
 const styles = StyleSheet.create({
     container:{
         backgroundColor: colors.green,
-        height: 40,
+        width: 300,
+        height: 50,
         borderRadius: 100,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        minHeight:50
     },
     text:{
         fontSize: 16,
         color: colors.white,
-        fontFamily: fonts.warning
+        fontFamily: fonts.warning,
+        fontWeight: 'bold'
     }
 })

@@ -23,10 +23,11 @@ export function BlueButton({ title, ...rest }: BlueButtonProps) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.blue,
-    height: 40,
+    height: 50,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
+    width: 300,
   },
   text: {
     fontSize: 20,

@@ -1058,8 +1058,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.text,
   },
   button: {
-    //marginTop: 40,
-    width: Dimensions.get("window").width * 0.9,
     padding: 40,
   },
 });

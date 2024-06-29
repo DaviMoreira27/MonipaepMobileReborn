@@ -88,16 +88,20 @@ export function Login() {
       navigation.navigate('SignUp' as never);
     }
 
-  return (
-    <SafeAreaView
-      accessible={true}
-      accessibilityLabel="Página de Login, insira seus dados para entrar na sua conta"
-    >
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+    function isMobileDevice(){
+      return Platform.OS === 'ios' || Platform.OS === 'android'
+    }
+
+    return (
+      <SafeAreaView
+        accessible={true}
+        accessibilityLabel="Página de Login, insira seus dados para entrar na sua conta"
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        >
+          <TouchableWithoutFeedback onPress={isMobileDevice() ? Keyboard.dismiss : null}>
           <View style={styles.header}>
             <Text style={styles.welcome}>Bem-Vindo ao</Text>
             <Text style={styles.appName}>MoniPaEp</Text>
@@ -310,8 +314,6 @@ const styles = StyleSheet.create({
     color: colors.gray_dark3,
   },
   button: {
-    //marginTop: 40,
-    width: Dimensions.get("window").width * 0.9,
     padding: 20,
   },
 });

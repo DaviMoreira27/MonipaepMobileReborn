@@ -9,6 +9,8 @@ import {
   View,
   FlatList,
   Alert,
+  Modal,
+  TouchableOpacity
 } from "react-native";
 import {
   GreenButton,
@@ -16,6 +18,7 @@ import {
   SafeAreaView,
   Symptom,
 } from "../components";
+import  Menu  from "../components/Menu";
 import { useAuth } from "../contexts/auth.context";
 import api from "../services/api";
 import colors from "../styles/colors";
@@ -25,7 +28,7 @@ interface SymptomsProps {
   symptom: string;
 }
 
-export function Symtopms() {
+export function Symptoms() {
   const { user, refreshToken, token } = useAuth();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSearchFilled, setIsSearchFilled] = useState(false);
@@ -33,22 +36,33 @@ export function Symtopms() {
   const [symptoms, setSymptoms] = useState<SymptomsProps[]>([]);
   const searchRef = useRef(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
     async function fetchSymptoms() {
-      //console.log("search: "+search)
       const response = await api.get("/symptom", {
         params: { symptom: search },
       });
       setSymptoms(response.data.symptoms);
     }
     fetchSymptoms();
-  }, []);
+  }, [search]);
 
 //   function handleProfile() {
 //     navigation.navigate("Profile");
 //   }
+
+  // Function to open the drawer
+  function openMenu() {
+    setMenuVisible(true);
+  }
+
+  // Function to close the drawer
+  function closeMenu() {
+    setMenuVisible(false);
+  }
+
   //Functions handle for Search
   function handleInputSearchBlur() {
     setIsSearchFocused(false);
@@ -88,7 +102,7 @@ export function Symtopms() {
       });
       Alert.alert(
         "Atualização concluida",
-        `Simtomas cadastrados: ${selectedSymptoms}`,
+        `Sintomas cadastrados: ${selectedSymptoms}`,
         [
           {
             text: "Ok",
@@ -113,16 +127,18 @@ export function Symtopms() {
   }
 
   return (
-    <SafeAreaView accessible={true}>
+    <SafeAreaView accessible={true} style={styles.safeArea}>
       <HeaderSimple titleScreen="Atualizar Sintomas" />
       <View style={styles.container}>
         <View style={styles.bodyUp} accessible={true}>
-          <MaterialIcons
-            style={styles.icons}
-            name="menu"
-            size={24}
-            color="black"
-          />
+          <TouchableOpacity onPress={openMenu}>
+            <MaterialIcons
+              style={styles.icons}
+              name="menu"
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
           <View style={styles.textAPP} accessible={true}>
             <Text style={styles.appName}>MoniPaEp</Text>
           </View>
@@ -142,16 +158,6 @@ export function Symtopms() {
             onFocus={handleInputSearchFocus}
             onChangeText={handleInputSearchChange}
           />
-          <MaterialIcons
-            name="search"
-            size={24}
-            color="gray"
-            style={[
-              styles.Icon,
-              (isSearchFocused || isSearchFilled) && { color: colors.blue },
-            ]}
-            onPress={handleSeach}
-          />
         </View>
         <View style={styles.symptomsList}>
           <FlatList
@@ -165,20 +171,34 @@ export function Symtopms() {
             )}
           />
         </View>
-        <View style={styles.bottom}>
-          <GreenButton
-            accessibilityLabel="Botão. Clique para ir para a página de atualizar sintomas"
-            title="Atualizar Sintomas"
-            onPress={handleSymptom}
-          />
-        </View>
       </View>
+      <View style={styles.bottom}>
+        <GreenButton
+          accessibilityLabel="Botão. Clique para ir para a página de atualizar sintomas"
+          title="Atualizar Sintomas"
+          onPress={handleSymptom}
+        />
+      </View>
+
+      {/* Modal for the Menu */}
+      <Modal
+        visible={menuVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeMenu}
+      >
+        <Menu onCloseMenu={closeMenu} />
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
+    flex: 1,
     backgroundColor: colors.white,
     alignItems: "center",
     justifyContent: "center",
@@ -209,7 +229,6 @@ const styles = StyleSheet.create({
     borderColor: colors.black,
     height: 50,
     borderRadius: 100,
-
     alignItems: "center",
   },
   textSerch: {
@@ -225,11 +244,16 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.8,
     paddingTop: 20,
     justifyContent: "center",
+    flex: 1,
   },
   bottom: {
-    //marginTop: 40,
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  greenButton: {
     width: Dimensions.get("window").width * 0.9,
-    paddingBottom: 20,
-    paddingTop: 30,
   },
 });

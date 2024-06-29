@@ -24,7 +24,8 @@ export function FAQ({title, ...rest}: GreenButtonProps){
 const styles = StyleSheet.create({
     container:{
         backgroundColor: colors.white,
-        height: 40,
+        height: 50,
+        width: 300,
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center',
@@ -37,3 +38,4 @@ const styles = StyleSheet.create({
         fontFamily: fonts.warning
     }
 })
+
